@@ -74,7 +74,7 @@ function DesktopCard({ branch, photo }: { branch: Branch; photo: string | null }
             onClick={() => setBranch(branch.id)}
             aria-pressed={isSel}
             aria-controls="branches-panel"
-            className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-extrabold transition-colors ${
+            className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-extrabold transition-colors ${
               isSel ? `${tone.solid} text-white` : `${tone.chip} hover:brightness-95`
             }`}
           >
@@ -119,7 +119,7 @@ function DesktopBranches({ photos }: { photos: Photos }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: 0.28 }}
             className={`shape-d grid gap-5 p-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.6fr)] lg:gap-8 lg:p-6 ${tone.mist}`}
           >
             {/* Мекенжай мен кесте жоғарыдағы карточкада бар — мұнда қайталанбайды */}
@@ -146,12 +146,12 @@ function DesktopBranches({ photos }: { photos: Photos }) {
 /* =============== Мобильді =============== */
 
 function MobileCard({ branch, photo }: { branch: Branch; photo: string | null }) {
-  const { t, lang, branch: selected, setBranch } = useSite();
+  const { t, lang } = useSite();
   const [open, setOpen] = useState(false);
   const tone = toneClasses[branch.tone];
   const panelId = `branch-m-${branch.id}`;
   return (
-    <article data-selected={selected === branch.id} className={`card p-2 ${selected === branch.id ? "ring-2 ring-ink/20" : ""} ${branch.tone === "teal" ? "shape-a" : "shape-c"}`}>
+    <article className={`card p-2 ${branch.tone === "teal" ? "shape-a" : "shape-c"}`}>
       <BranchPhoto branch={branch} src={photo} sizes="100vw" className="aspect-[2/1] rounded-[16px_16px_16px_6px]" />
       <div className="p-2.5 pt-3.5">
         <h3 className="font-display text-base font-semibold text-ink">{branch.name[lang]}</h3>
@@ -169,7 +169,7 @@ function MobileCard({ branch, photo }: { branch: Branch; photo: string | null })
           type="button"
           aria-expanded={open}
           aria-controls={panelId}
-          onClick={() => { setBranch(branch.id); setOpen((v) => !v); }}
+          onClick={() => setOpen((v) => !v)}
           className={`mt-2.5 flex min-h-11 w-full items-center justify-between rounded-2xl px-4 text-[14.5px] font-extrabold ${tone.chip}`}
         >
           {open ? t.branches.hideDetails : t.branches.showDetails}

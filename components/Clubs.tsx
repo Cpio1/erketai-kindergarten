@@ -1,13 +1,20 @@
 "use client";
 
-import { PlayArt } from "./PlayArt";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { getBranch, whatsappWithText } from "@/lib/branches";
-import { SERVICE_ICONS } from "./BranchParts";
+import { ACTIVITY_ICONS, SERVICE_ICONS } from "./BranchParts";
 import { BranchTabs } from "./Branches";
 import { useSite } from "./Providers";
 import { Reveal, SectionHead, WhatsAppIcon } from "./ui";
+
+const TONES = [
+  "bg-teal-soft text-teal-deep",
+  "bg-peach-soft text-peach-deep",
+  "bg-sun-soft text-sun-deep",
+  "bg-violet-soft text-violet-deep",
+];
+const SHAPES = ["shape-a", "shape-b", "shape-c", "shape-d"];
 
 export function Clubs() {
   const { t, lang, branch: id } = useSite();
@@ -26,15 +33,18 @@ export function Clubs() {
 
         <div id="clubs-panel" role="tabpanel" aria-labelledby={`clubs-tab-${b.id}`} aria-live="polite" className="mt-6">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={b.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.1 }}>
+            <motion.div key={b.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.25 }}>
               <h3 className="text-xs font-extrabold tracking-wider text-ink-soft uppercase">
                 {t.clubs.clubsLabel} · {b.name[lang]}
               </h3>
               <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
-                {b.activities.map((a) => {
+                {b.activities.map((a, i) => {
+                  const I = ACTIVITY_ICONS[a];
                   return (
-                    <li key={a} className="club-card lift min-w-0">
-                      <PlayArt kind={a}/>
+                    <li key={a} className={`card lift flex min-w-0 items-start gap-3 p-3.5 sm:gap-4 sm:p-4 ${SHAPES[i % 4]}`}>
+                      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl sm:h-11 sm:w-11 sm:rounded-2xl ${TONES[i % 4]}`}>
+                        <I className="h-5 w-5" aria-hidden />
+                      </span>
                       <span className="min-w-0">
                         <span className="block font-display text-[15px] font-semibold text-ink sm:text-base">{t.clubs.activities[a].title}</span>
                         <span className="mt-0.5 block text-[14px] leading-snug text-ink-soft">{t.clubs.activities[a].text}</span>
@@ -42,10 +52,6 @@ export function Clubs() {
                     </li>
                   );
                 })}
-                <li className="club-card lift min-w-0">
-                  <PlayArt kind="english"/>
-                  <span className="min-w-0"><span className="block font-display text-[15px] font-semibold text-ink sm:text-base">{t.features.english.title}</span><span className="mt-0.5 block text-[14px] leading-snug text-ink-soft">{t.features.english.text}</span></span>
-                </li>
               </ul>
 
               {b.services.length ? (

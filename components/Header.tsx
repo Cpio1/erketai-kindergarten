@@ -38,7 +38,7 @@ function LangSwitch({ className = "" }: { className?: string }) {
           type="button"
           onClick={() => setLang(l)}
           aria-pressed={lang === l}
-          className={`min-h-11 min-w-11 rounded-full px-3 text-sm font-extrabold transition-colors ${
+          className={`min-h-9 min-w-11 rounded-full px-3 text-sm font-extrabold transition-colors ${
             lang === l ? "bg-ink text-white" : "text-ink-soft hover:text-ink"
           }`}
         >
@@ -110,21 +110,9 @@ export function Header({ logo }: { logo: string | null }) {
   const [scrolled, setScrolled] = useState(false);
   const active = useActiveSection();
   const panelRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const closeMenu = useCallback(() => setOpen(false), []);
   useAnchorNavigation(closeMenu);
-
-  // Measure the bar, excluding the absolute mobile menu. Keep its CSS height independent.
-  useEffect(() => {
-    const bar = barRef.current;
-    if (!bar) return;
-    const measure = () => document.documentElement.style.setProperty("--header-h", `${bar.parentElement!.getBoundingClientRect().height}px`);
-    const observer = new ResizeObserver(measure);
-    observer.observe(bar);
-    measure();
-    return () => { observer.disconnect(); document.documentElement.style.removeProperty("--header-h"); };
-  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -161,7 +149,7 @@ export function Header({ logo }: { logo: string | null }) {
         scrolled || open ? "bg-cream/90 shadow-[0_8px_24px_-18px_rgb(34_48_74/0.35)] backdrop-blur-md" : "bg-cream/0"
       }`}
     >
-      <div ref={barRef} className="header-bar wrap flex items-center justify-between gap-4">
+      <div className="wrap flex h-[var(--header-h)] items-center justify-between gap-4">
         <a href="#top" aria-label={`Erketai — ${t.nav.home}`} className="shrink-0 rounded-xl" onClick={() => setOpen(false)}>
           <Brand logo={logo} />
         </a>
