@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { afterNextPaint, scrollToSection } from "@/lib/anchor-scroll";
 import { branches } from "@/lib/branches";
 import { SECTION_IDS, type SectionId } from "@/lib/i18n";
 import { useSite } from "./Providers";
@@ -65,6 +66,44 @@ function useActiveSection() {
   return active;
 }
 
+/*
+  Барлық ішкі якорь сілтемелерін (мәзір, футер, Hero батырмалары) ұстап,
+  бөлімге шапка биіктігін ескеріп скроллдайды. Мобильді мәзірден басқанда
+  алдымен мәзір жабылып, body скролл-құлпы алынады — содан кейін ғана скролл.
+*/
+function useAnchorNavigation(closeMenu: () => void) {
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href^="#"]');
+      if (!a) return;
+      const id = decodeURIComponent(a.getAttribute("href")!.slice(1));
+      const el = id ? document.getElementById(id) : null;
+      if (!el || el.tagName !== "SECTION") return; // мысалы #main (SkipLink) — әдепкі әрекет
+      e.preventDefault();
+      const fromHeader = !!a.closest("header");
+      closeMenu();
+      if (id === "top") history.pushState(null, "", location.pathname + location.search);
+      else if (location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
+      (fromHeader ? afterNextPaint() : Promise.resolve()).then(() => scrollToSection(id));
+    };
+    document.addEventListener("click", onClick);
+
+    /* Сілтемемен ашылғанда (/#groups) — суреттер жүктелген соң позицияны нақтылау */
+    const initial = decodeURIComponent(location.hash.slice(1));
+    const fixInitial = () => {
+      if (initial && document.getElementById(initial)?.tagName === "SECTION") scrollToSection(initial, { smooth: false });
+    };
+    if (document.readyState === "complete") fixInitial();
+    else window.addEventListener("load", fixInitial, { once: true });
+
+    return () => {
+      document.removeEventListener("click", onClick);
+      window.removeEventListener("load", fixInitial);
+    };
+  }, [closeMenu]);
+}
+
 export function Header({ logo }: { logo: string | null }) {
   const { t, lang, setEnrollOpen } = useSite();
   const [open, setOpen] = useState(false);
@@ -72,6 +111,8 @@ export function Header({ logo }: { logo: string | null }) {
   const active = useActiveSection();
   const panelRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const closeMenu = useCallback(() => setOpen(false), []);
+  useAnchorNavigation(closeMenu);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);

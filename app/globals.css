@@ -57,7 +57,9 @@
   color-scheme: light only;
   /* Бекітілген шапка биіктігі — якорьлер мен scroll-margin осыны қолданады */
   --header-h: 64px;
-  --anchor-offset: calc(var(--header-h) + 8px);
+  /* Шапканың астыңғы шеті мен бөлім басы арасындағы аралық (мобильді) */
+  --anchor-gap: 20px;
+  --anchor-offset: calc(var(--header-h) + var(--anchor-gap));
   /* Асимметриялық карточкалардың бұрыштары экранға қарай кішірейеді */
   --r: clamp(20px, 12px + 1.4vw, 30px);
   --r-s: clamp(8px, 6px + 0.4vw, 12px);
@@ -66,6 +68,8 @@
 @media (min-width: 1280px) {
   :root {
     --header-h: 76px;
+    /* Десктоп: шапка биік, аралық сәл үлкен */
+    --anchor-gap: 28px;
   }
 }
 
@@ -89,7 +93,8 @@ body {
 /*
   Якорь офсеті ТЕК scroll-margin арқылы беріледі.
   html-ге scroll-padding-top қоспаңыз: олар қосылып, офсет екі есе болып кетеді.
-  Нәтиже: бөлімнің басы шапкадан 8px төмен, тақырып толық көрінеді.
+  Нәтиже: бөлімнің басы шапкадан --anchor-gap (20px / 28px) төмен, тақырып толық көрінеді.
+  JS навигациясы (lib/anchor-scroll.ts) да дәл осы мәнді оқиды.
 */
 section[id] {
   scroll-margin-top: var(--anchor-offset);
