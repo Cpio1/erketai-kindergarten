@@ -57,18 +57,24 @@ function DesktopCard({ branch, photo }: { branch: Branch; photo: string | null }
   const tone = toneClasses[branch.tone];
   return (
     <article
-      className={`card lift flex w-full min-w-0 flex-col p-3 transition-shadow ${branch.tone === "teal" ? "shape-a" : "shape-c"} ${isSel ? `ring-[3px] ${tone.ring}` : ""}`}
+      className={`card lift flex w-full min-w-0 flex-col p-2.5 transition-shadow lg:flex-row ${branch.tone === "teal" ? "shape-a" : "shape-c"} ${isSel ? `ring-[3px] ${tone.ring}` : ""}`}
     >
-      <BranchPhoto branch={branch} src={photo} sizes="(min-width:1280px) 580px, 48vw" className={`aspect-[16/8] ${branch.tone === "teal" ? "rounded-[24px_24px_24px_8px]" : "rounded-[8px_24px_24px_24px]"}`} />
-      <div className="flex flex-1 flex-col p-4 lg:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <h3 className="min-w-0 font-display text-xl font-semibold text-ink lg:text-2xl">{branch.name[lang]}</h3>
+      {/* md: сурет үстінде (2:1) · lg+: сурет сол жақта — карточка екі есе аласа */}
+      <BranchPhoto
+        branch={branch}
+        src={photo}
+        sizes="(min-width:1024px) 230px, 48vw"
+        className={`aspect-[2/1] shrink-0 lg:aspect-auto lg:min-h-[230px] lg:w-[40%] ${branch.tone === "teal" ? "rounded-[20px_20px_20px_8px]" : "rounded-[8px_20px_20px_20px]"}`}
+      />
+      <div className="flex min-w-0 flex-1 flex-col p-3.5 lg:p-4 lg:pl-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="min-w-0 font-display text-[17px] font-semibold text-ink xl:text-lg">{branch.name[lang]}</h3>
           <button
             type="button"
             onClick={() => setBranch(branch.id)}
             aria-pressed={isSel}
             aria-controls="branches-panel"
-            className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-4 text-sm font-extrabold transition-colors ${
+            className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-extrabold transition-colors ${
               isSel ? `${tone.solid} text-white` : `${tone.chip} hover:brightness-95`
             }`}
           >
@@ -76,10 +82,10 @@ function DesktopCard({ branch, photo }: { branch: Branch; photo: string | null }
             {isSel ? t.common.selected : t.branches.detailsFor}
           </button>
         </div>
-        <div className="mt-4">
+        <div className="mt-3">
           <BranchFacts branch={branch} />
         </div>
-        <div className="mt-auto pt-6">
+        <div className="mt-auto pt-4">
           <BranchActions branch={branch} />
         </div>
       </div>
@@ -88,12 +94,12 @@ function DesktopCard({ branch, photo }: { branch: Branch; photo: string | null }
 }
 
 function DesktopBranches({ photos }: { photos: Photos }) {
-  const { t, lang, branch: selId } = useSite();
+  const { lang, branch: selId } = useSite();
   const sel = branches.find((b) => b.id === selId)!;
   const tone = toneClasses[sel.tone];
   return (
     <div className="hidden md:block">
-      <div className="mt-10 grid grid-cols-2 gap-6 xl:gap-8">
+      <div className="mt-7 grid grid-cols-2 gap-4 xl:gap-6">
         {branches.map((b, i) => (
           <Reveal key={b.id} delay={i * 0.08} className="flex">
             <DesktopCard branch={b} photo={photos[b.id]} />
@@ -101,9 +107,9 @@ function DesktopBranches({ photos }: { photos: Photos }) {
         ))}
       </div>
 
-      <div className="mt-8 flex items-center justify-between gap-4">
+      <div className="mt-6 flex items-center justify-between gap-4">
         <BranchTabs idPrefix="branches" />
-        <Squiggle aria-hidden className="h-4 w-20 shrink-0 text-sun" />
+        <Squiggle aria-hidden className="h-3 w-12 shrink-0 text-sun" />
       </div>
 
       <div id="branches-panel" role="tabpanel" aria-labelledby={`branches-tab-${sel.id}`} className="mt-4">
@@ -114,26 +120,21 @@ function DesktopBranches({ photos }: { photos: Photos }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.28 }}
-            className={`shape-d grid gap-8 p-6 lg:grid-cols-[0.9fr_1.4fr_0.9fr] lg:p-8 ${tone.mist}`}
+            className={`shape-d grid gap-5 p-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.6fr)] lg:gap-8 lg:p-6 ${tone.mist}`}
           >
+            {/* Мекенжай мен кесте жоғарыдағы карточкада бар — мұнда қайталанбайды */}
             <div className="min-w-0">
-              <h3 className={`font-display text-lg font-semibold ${tone.text}`}>{sel.name[lang]}</h3>
-              <p className="mt-1 text-sm text-ink-soft">{sel.district[lang]}</p>
-              <div className="mt-4">
+              <h3 className={`font-display text-base font-semibold lg:text-[17px] ${tone.text}`}>{sel.name[lang]}</h3>
+              <p className="mt-0.5 text-sm text-ink-soft">{sel.district[lang]}</p>
+              <div className="mt-3">
                 <BranchStats branch={sel} />
-              </div>
-            </div>
-            <div className="min-w-0">
-              <BranchServices branch={sel} />
-            </div>
-            <div className="min-w-0">
-              <h4 className="text-xs font-extrabold tracking-wider text-ink-soft uppercase">{t.branches.contactsTitle}</h4>
-              <div className="mt-3 rounded-2xl bg-paper p-4">
-                <BranchFacts branch={sel} />
               </div>
               <div className="mt-3">
                 <BranchActions branch={sel} withCall stack />
               </div>
+            </div>
+            <div className="min-w-0">
+              <BranchServices branch={sel} />
             </div>
           </motion.div>
         </AnimatePresence>
@@ -150,18 +151,18 @@ function MobileCard({ branch, photo }: { branch: Branch; photo: string | null })
   const tone = toneClasses[branch.tone];
   const panelId = `branch-m-${branch.id}`;
   return (
-    <article className={`card overflow-hidden ${branch.tone === "teal" ? "shape-a" : "shape-c"}`}>
-      <BranchPhoto branch={branch} src={photo} sizes="100vw" className="aspect-[16/10]" />
-      <div className="p-4 xs:p-5">
-        <h3 className="font-display text-lg font-semibold text-ink">{branch.name[lang]}</h3>
-        <div className="mt-3">
+    <article className={`card p-2 ${branch.tone === "teal" ? "shape-a" : "shape-c"}`}>
+      <BranchPhoto branch={branch} src={photo} sizes="100vw" className="aspect-[2/1] rounded-[16px_16px_16px_6px]" />
+      <div className="p-2.5 pt-3.5">
+        <h3 className="font-display text-base font-semibold text-ink">{branch.name[lang]}</h3>
+        <div className="mt-2.5">
           <BranchFacts branch={branch} />
         </div>
-        <div className="mt-4">
+        <div className="mt-3">
           <BranchStats branch={branch} />
         </div>
-        <div className="mt-4">
-          <BranchActions branch={branch} />
+        <div className="mt-3">
+          <BranchActions branch={branch} compact />
         </div>
 
         <button
@@ -169,7 +170,7 @@ function MobileCard({ branch, photo }: { branch: Branch; photo: string | null })
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen((v) => !v)}
-          className={`mt-3 flex min-h-12 w-full items-center justify-between rounded-2xl px-4 text-[15px] font-extrabold ${tone.chip}`}
+          className={`mt-2.5 flex min-h-11 w-full items-center justify-between rounded-2xl px-4 text-[14.5px] font-extrabold ${tone.chip}`}
         >
           {open ? t.branches.hideDetails : t.branches.showDetails}
           <ChevronDown className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
@@ -198,7 +199,7 @@ function MobileCard({ branch, photo }: { branch: Branch; photo: string | null })
 
 function MobileBranches({ photos }: { photos: Photos }) {
   return (
-    <div className="mt-8 grid gap-5 md:hidden">
+    <div className="mt-6 grid gap-4 md:hidden">
       {branches.map((b) => (
         <Reveal key={b.id}>
           <MobileCard branch={b} photo={photos[b.id]} />

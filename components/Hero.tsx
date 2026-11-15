@@ -5,7 +5,7 @@ import { ArrowRight, Baby, Building2, Languages, MessageCircleHeart, UtensilsCro
 import Image from "next/image";
 import type { ComponentType, SVGProps } from "react";
 import { useSite } from "./Providers";
-import { Cloud, Reveal, Ring, Sparkle } from "./ui";
+import { Reveal, Ring, Sparkle } from "./ui";
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -57,21 +57,22 @@ function DesktopHero({ hero }: { hero: string | null }) {
   const reduce = useReducedMotion();
   return (
     <div className="wrap hidden md:block">
-      <div className="grid grid-cols-[1.05fr_0.95fr] items-center gap-10 lg:gap-14 xl:gap-20">
-        <div className="relative min-w-0 py-4">
+      <div className="grid grid-cols-[1.08fr_0.92fr] items-center gap-8 lg:gap-12 xl:gap-16">
+        <div className="min-w-0">
           <Reveal>
             <span className="eyebrow">
-              <Sparkle className="h-3.5 w-3.5 text-sun" />
+              <Sparkle className="h-3 w-3 text-sun" />
               {t.hero.eyebrow}
             </span>
           </Reveal>
           <Reveal delay={0.05}>
-            <Title className="mt-6 text-[clamp(2.1rem,1rem+2.6vw,3.6rem)] leading-[1.12]" />
+            {/* 768px → 30px · 1280px → 40px · 1920px → 44px */}
+            <Title className="mt-4 text-[clamp(1.875rem,0.95rem+1.95vw,2.75rem)] leading-[1.14] lg:mt-5" />
           </Reveal>
           <Reveal delay={0.1}>
-            <p className="lead mt-7 max-w-[34rem] text-lg">{t.hero.text}</p>
+            <p className="lead mt-4 max-w-[32rem] lg:mt-5">{t.hero.text}</p>
           </Reveal>
-          <Reveal delay={0.15} className="mt-9 flex flex-wrap gap-3">
+          <Reveal delay={0.15} className="mt-6 flex flex-wrap gap-3 lg:mt-8">
             <button type="button" onClick={() => setEnrollOpen(true)} className="btn btn-primary">
               {t.hero.enroll}
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -82,30 +83,33 @@ function DesktopHero({ hero }: { hero: string | null }) {
           </Reveal>
         </div>
 
-        {/* Сурет + кішкентай декорлар — бәрі осы блоктың ішінде */}
+        {/*
+          Сурет + кішкентай декорлар. Декорлар тек p-5 бос жиегінде орналасады,
+          суретке де, мәтінге де түспейді.
+        */}
         <motion.div
-          initial={reduce ? false : { opacity: 0, scale: 0.97 }}
+          initial={reduce ? false : { opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative min-w-0 p-5 lg:p-7"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="relative min-w-0 p-5"
         >
-          <span aria-hidden className="absolute top-0 right-6 h-14 w-14 rounded-full bg-sun lg:h-16 lg:w-16" />
-          <Ring aria-hidden className="absolute bottom-2 left-0 h-10 w-10 text-violet/70" />
-          <span aria-hidden className="dots absolute right-0 bottom-10 h-20 w-16 text-peach/60" />
-          <Sparkle aria-hidden className="absolute top-10 left-1 h-6 w-6 animate-float text-teal" />
+          <span aria-hidden className="absolute top-0 right-8 h-4 w-4 rounded-full bg-sun" />
+          <Sparkle aria-hidden className="absolute top-8 left-0 h-3.5 w-3.5 text-teal" />
+          <Ring aria-hidden className="absolute right-0 bottom-16 h-3.5 w-3.5 text-violet/70" />
 
-          <div className="shape-a relative aspect-[5/4.3] max-h-[540px] w-full overflow-hidden bg-teal-soft shadow-lift">
-            <HeroPhoto src={hero} alt={t.hero.photoAlt} sizes="(min-width: 1280px) 560px, 45vw" />
+          {/* Биіктігі экран биіктігіне байланысты: 1280×720-да да толық көрінеді */}
+          <div className="shape-a relative aspect-[5/4] max-h-[clamp(280px,calc(100svh-var(--header-h)-230px),440px)] w-full overflow-hidden bg-teal-soft shadow-soft">
+            <HeroPhoto src={hero} alt={t.hero.photoAlt} sizes="(min-width: 1280px) 540px, 45vw" />
           </div>
 
-          <div className="absolute bottom-0 left-8 flex items-center gap-2.5 rounded-2xl bg-paper px-4 py-3 shadow-soft lg:left-12">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-peach-soft text-peach-deep">
-              <Baby className="h-5 w-5" aria-hidden />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-paper px-3 py-1.5 text-[13px] font-extrabold text-peach-deep shadow-soft">
+              <Baby className="h-4 w-4" aria-hidden />
+              {t.hero.badgeAges}
             </span>
-            <span className="font-display text-sm font-semibold text-ink">{t.hero.badgeAges}</span>
-          </div>
-          <div className="absolute top-12 right-0 rounded-2xl bg-paper px-4 py-2.5 shadow-soft">
-            <span className="font-display text-xs font-semibold tracking-wide text-violet-deep">{t.hero.badgeLangs}</span>
+            <span className="inline-flex items-center rounded-full bg-paper px-3 py-1.5 text-[13px] font-extrabold tracking-wide text-violet-deep shadow-soft">
+              {t.hero.badgeLangs}
+            </span>
           </div>
         </motion.div>
       </div>
@@ -113,44 +117,45 @@ function DesktopHero({ hero }: { hero: string | null }) {
   );
 }
 
-/* =============== Мобильді (<768px) =============== */
+/* =============== Мобильді (<768px) — жеке композиция =============== */
 
 function MobileHero({ hero }: { hero: string | null }) {
   const { t, setEnrollOpen } = useSite();
   return (
     <div className="wrap md:hidden">
       <Reveal>
-        <span className="eyebrow text-[12px]">
+        <span className="eyebrow text-[11px] tracking-[0.03em]">
           <Sparkle className="h-3 w-3 text-sun" />
           {t.hero.eyebrow}
         </span>
       </Reveal>
       <Reveal delay={0.05}>
-        <Title className="mt-4 text-[clamp(1.55rem,0.7rem+4.6vw,2.2rem)] leading-[1.18]" />
+        {/* 320px → 23px · 430px → 27px */}
+        <Title className="mt-3 text-[clamp(1.4375rem,0.75rem+3.4vw,1.75rem)] leading-[1.2]" />
       </Reveal>
       <Reveal delay={0.08}>
-        <p className="lead mt-4 text-base">{t.hero.text}</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{t.hero.text}</p>
       </Reveal>
 
-      <Reveal delay={0.1} className="relative mt-6">
-        <span aria-hidden className="absolute -top-2 right-3 z-10 h-8 w-8 rounded-full bg-sun" />
-        <div className="shape-b relative aspect-[4/3] w-full overflow-hidden bg-teal-soft shadow-soft">
-          <HeroPhoto src={hero} alt={t.hero.photoAlt} sizes="100vw" />
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-full bg-peach-soft px-3 py-1.5 text-sm font-extrabold text-peach-deep">{t.hero.badgeAges}</span>
-          <span className="rounded-full bg-violet-soft px-3 py-1.5 text-sm font-extrabold text-violet-deep">{t.hero.badgeLangs}</span>
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.12} className="mt-6 grid gap-3">
-        <button type="button" onClick={() => setEnrollOpen(true)} className="btn btn-primary w-full">
+      {/* Батырмалар суреттен жоғары — 320×568 экранда да бірден көрінеді */}
+      <Reveal delay={0.1} className="mt-5 grid gap-2.5">
+        <button type="button" onClick={() => setEnrollOpen(true)} className="btn btn-primary w-full px-4">
           {t.hero.enroll}
-          <ArrowRight className="h-4 w-4" aria-hidden />
+          <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
         </button>
-        <a href="#branches" className="btn btn-ghost w-full">
+        <a href="#branches" className="btn btn-ghost w-full px-4">
           {t.hero.branches}
         </a>
+      </Reveal>
+
+      <Reveal delay={0.12} className="mt-5">
+        <div className="shape-b relative aspect-[16/10] w-full overflow-hidden bg-teal-soft shadow-soft">
+          <HeroPhoto src={hero} alt={t.hero.photoAlt} sizes="100vw" />
+        </div>
+        <div className="mt-2.5 flex flex-wrap gap-2">
+          <span className="rounded-full bg-peach-soft px-3 py-1 text-[13px] font-extrabold text-peach-deep">{t.hero.badgeAges}</span>
+          <span className="rounded-full bg-violet-soft px-3 py-1 text-[13px] font-extrabold text-violet-deep">{t.hero.badgeLangs}</span>
+        </div>
       </Reveal>
     </div>
   );
@@ -170,18 +175,18 @@ const FEATURES: { key: "branches" | "ages" | "langs" | "english" | "meals" | "ca
 function Features() {
   const { t } = useSite();
   return (
-    <div className="wrap mt-10 md:mt-14">
-      <ul className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 xl:grid-cols-6">
+    <div className="wrap mt-7 md:mt-10">
+      <ul className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 xl:grid-cols-6">
         {FEATURES.map(({ key, icon: I, tone }, i) => (
-          <Reveal as="li" key={key} delay={i * 0.04} className={`card lift flex min-w-0 flex-col gap-3 p-4 sm:p-5 ${["shape-a", "shape-b", "shape-c", "shape-d"][i % 4]}`}>
-            <span className={`grid h-10 w-10 place-items-center rounded-2xl sm:h-11 sm:w-11 ${tone}`}>
-              <I className="h-5 w-5" aria-hidden />
+          <Reveal as="li" key={key} delay={i * 0.04} className={`card lift flex min-w-0 flex-col gap-2 p-3 sm:gap-2.5 sm:p-4 ${["shape-a", "shape-b", "shape-c", "shape-d"][i % 4]}`}>
+            <span className={`grid h-8 w-8 place-items-center rounded-xl sm:h-10 sm:w-10 sm:rounded-2xl ${tone}`}>
+              <I className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden />
             </span>
             <span className="min-w-0">
-              <span className="block font-display text-[14px] leading-snug font-semibold break-words text-ink sm:text-[15px]">
+              <span className="block font-display text-[13px] leading-snug font-semibold break-words text-ink sm:text-[14px]">
                 {t.features[key].title}
               </span>
-              <span className="mt-1 block text-[13.5px] leading-snug text-ink-soft sm:text-sm">{t.features[key].text}</span>
+              <span className="mt-0.5 block text-[12.5px] leading-snug text-ink-soft sm:text-[13.5px]">{t.features[key].text}</span>
             </span>
           </Reveal>
         ))}
@@ -192,8 +197,7 @@ function Features() {
 
 export function Hero({ hero }: { hero: string | null }) {
   return (
-    <section id="top" aria-label="Erketai" className="relative pt-[calc(var(--header-h)+20px)] pb-6 md:pt-[calc(var(--header-h)+40px)] md:pb-10">
-      <Cloud aria-hidden className="pointer-events-none absolute top-[calc(var(--header-h)+8px)] left-[46%] hidden h-8 w-12 text-paper lg:block" />
+    <section id="top" aria-label="Erketai" className="relative pt-[calc(var(--header-h)+16px)] pb-2 md:pt-[calc(var(--header-h)+24px)] md:pb-4">
       <DesktopHero hero={hero} />
       <MobileHero hero={hero} />
       <Features />

@@ -34,14 +34,14 @@ export function BranchPhoto({ branch, src, className, sizes }: { branch: Branch;
         <Image src={src} alt={`${t.branches.photoAlt} — ${branch.name[lang]}`} fill sizes={sizes} className="object-cover" />
       ) : (
         <div aria-hidden className="absolute inset-0">
-          <span className={`absolute top-5 right-6 h-10 w-10 rounded-full ${branch.tone === "teal" ? "bg-sun" : "bg-violet/70"}`} />
-          <span className="dots absolute bottom-4 left-5 h-12 w-20 text-white/80" />
+          <span className={`absolute top-4 right-4 h-6 w-6 rounded-full ${branch.tone === "teal" ? "bg-sun" : "bg-violet/70"}`} />
+          <span className="dots absolute bottom-3 left-4 h-8 w-14 text-white/80" />
           <div className="absolute inset-0 grid place-items-center">
-            <span className={`font-display text-[44px] leading-none font-bold opacity-25 sm:text-5xl ${tone.text}`}>{t.branchShort[branch.id]}</span>
+            <span className={`font-display text-[clamp(1.6rem,1rem+2vw,2.25rem)] leading-none font-bold opacity-25 ${tone.text}`}>{t.branchShort[branch.id]}</span>
           </div>
         </div>
       )}
-      <span className={`absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-paper/95 px-3 py-1.5 text-xs font-extrabold ${tone.text}`}>
+      <span className={`absolute top-2.5 left-2.5 inline-flex items-center gap-1 rounded-full bg-paper/95 px-2.5 py-1 text-[11.5px] font-extrabold ${tone.text}`}>
         <Sparkle className="h-3 w-3" />
         {branch.district[lang]}
       </span>
@@ -54,7 +54,7 @@ export function BranchFacts({ branch, withPhone = true }: { branch: Branch; with
   const { t, lang } = useSite();
   const tone = toneClasses[branch.tone];
   return (
-    <dl className="grid gap-3 text-[15px]">
+    <dl className="grid gap-2.5 text-[14.5px] leading-snug">
       <div className="flex gap-3">
         <dt className="sr-only">{t.common.address}</dt>
         <MapPin className={`mt-0.5 h-5 w-5 shrink-0 ${tone.text}`} aria-hidden />
@@ -94,11 +94,12 @@ export function BranchStats({ branch }: { branch: Branch }) {
     { label: t.common.languages, value: t.common.languagesValue },
   ];
   return (
-    <dl className="grid grid-cols-3 gap-2">
-      {items.map((it) => (
-        <div key={it.label} className="min-w-0 rounded-2xl bg-cream px-2.5 py-2.5 text-center sm:px-3">
+    /* <400px: «Тілдер» ұяшығы жеке қатарда — сөздер бөлінбейді */
+    <dl className="grid grid-cols-2 gap-2 xs:grid-cols-3">
+      {items.map((it, i) => (
+        <div key={it.label} className={`min-w-0 rounded-2xl bg-cream px-2.5 py-2 text-center sm:px-3 ${i === 2 ? "col-span-2 xs:col-span-1" : ""}`}>
           <dt className="text-[11.5px] leading-tight font-bold text-ink-soft sm:text-xs">{it.label}</dt>
-          <dd className="mt-1 text-[13px] leading-tight font-extrabold break-words text-ink sm:text-sm">{it.value}</dd>
+          <dd className="mt-1 text-[13px] leading-tight font-extrabold text-ink sm:text-sm">{it.value}</dd>
         </div>
       ))}
     </dl>
@@ -163,11 +164,24 @@ export function BranchServices({ branch, compact = false }: { branch: Branch; co
 }
 
 /** WhatsApp + Instagram (+ қоңырау) батырмалары */
-export function BranchActions({ branch, withCall = false, stack = false }: { branch: Branch; withCall?: boolean; stack?: boolean }) {
+export function BranchActions({
+  branch,
+  withCall = false,
+  stack = false,
+  compact = false,
+}: {
+  branch: Branch;
+  withCall?: boolean;
+  stack?: boolean;
+  /** Мобильді карточкалар: екі батырма әрқашан қатар (320px-те де сыяды) */
+  compact?: boolean;
+}) {
   const { t, lang } = useSite();
   const label = branch.name[lang];
   return (
-    <div className={`grid gap-2.5 ${stack ? "grid-cols-1" : "grid-cols-1 xs:grid-cols-2"} ${withCall && !stack ? "xl:grid-cols-3" : ""}`}>
+    <div
+      className={`grid ${compact ? "grid-cols-2 gap-2 [&_.btn]:px-2.5" : "gap-2.5"} ${stack ? "grid-cols-1" : compact ? "" : "grid-cols-1 xs:grid-cols-2"} ${withCall && !stack ? "xl:grid-cols-3" : ""}`}
+    >
       <a href={branch.whatsapp} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-sm" aria-label={`${t.common.whatsapp} — ${label}`}>
         <WhatsAppIcon className="h-[18px] w-[18px]" />
         {t.common.whatsapp}
@@ -177,7 +191,7 @@ export function BranchActions({ branch, withCall = false, stack = false }: { bra
         {t.common.instagram}
       </a>
       {withCall ? (
-        <a href={branch.phone.href} className={`btn btn-ghost btn-sm ${stack ? "" : "xs:col-span-2 xl:col-span-1"}`}>
+        <a href={branch.phone.href} className={`btn btn-ghost btn-sm ${stack ? "" : compact ? "col-span-2 xl:col-span-1" : "xs:col-span-2 xl:col-span-1"}`}>
           <Phone className="h-4 w-4" aria-hidden />
           {t.common.call}
         </a>

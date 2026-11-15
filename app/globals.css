@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-/* Сайт әрқашан ашық түсте: dark-вариант ешқашан қосылмайды */
-@custom-variant dark (&:where([data-theme="never-dark"], [data-theme="never-dark"] *));
 
 @theme {
   --color-cream: #fff8ef;
@@ -55,9 +53,14 @@
 }
 
 :root {
+  /* Тек ашық тема: жүйенің түнгі режимі сайттың түстерін өзгертпейді */
   color-scheme: light only;
   /* Бекітілген шапка биіктігі — якорьлер мен scroll-margin осыны қолданады */
   --header-h: 64px;
+  --anchor-offset: calc(var(--header-h) + 8px);
+  /* Асимметриялық карточкалардың бұрыштары экранға қарай кішірейеді */
+  --r: clamp(20px, 12px + 1.4vw, 30px);
+  --r-s: clamp(8px, 6px + 0.4vw, 12px);
 }
 
 @media (min-width: 1280px) {
@@ -67,12 +70,10 @@
 }
 
 html {
+  color-scheme: light only;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-h) + 12px);
   -webkit-text-size-adjust: 100%;
   background: var(--color-cream);
-  /* Көлденең скроллға қарсы қосымша сақтандыру (clip — sticky/scroll-ды бұзбайды) */
-  overflow-x: clip;
 }
 
 body {
@@ -81,13 +82,17 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
-  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/*
+  Якорь офсеті ТЕК scroll-margin арқылы беріледі.
+  html-ге scroll-padding-top қоспаңыз: олар қосылып, офсет екі есе болып кетеді.
+  Нәтиже: бөлімнің басы шапкадан 8px төмен, тақырып толық көрінеді.
+*/
 section[id] {
-  scroll-margin-top: calc(var(--header-h) + 12px);
+  scroll-margin-top: var(--anchor-offset);
 }
 
 ::selection {
@@ -138,16 +143,16 @@ img {
 
   .section {
     position: relative;
-    padding-block: 64px;
+    padding-block: 44px;
   }
   @media (min-width: 768px) {
     .section {
-      padding-block: 88px;
+      padding-block: 64px;
     }
   }
   @media (min-width: 1280px) {
     .section {
-      padding-block: 104px;
+      padding-block: 72px;
     }
   }
 
@@ -156,8 +161,8 @@ img {
     align-items: center;
     gap: 8px;
     border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 13px;
+    padding: 5px 12px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -171,15 +176,16 @@ img {
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.18;
-    font-size: clamp(1.5rem, 1.05rem + 1.9vw, 2.6rem);
+    /* 320px → 22px · 768px → ~26px · 1280px → ~29px · 1920px → 34px */
+    font-size: clamp(1.375rem, 1.1rem + 0.95vw, 2.125rem);
     text-wrap: balance;
     overflow-wrap: break-word;
   }
 
   .lead {
     color: var(--color-ink-soft);
-    font-size: 1.0625rem;
-    line-height: 1.65;
+    font-size: clamp(0.9375rem, 0.88rem + 0.25vw, 1.0625rem);
+    line-height: 1.6;
     text-wrap: pretty;
   }
 
@@ -188,9 +194,9 @@ img {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 48px;
+    min-height: 46px;
     border-radius: 999px;
-    padding: 12px 22px;
+    padding: 11px 20px;
     font-weight: 800;
     font-size: 15.5px;
     line-height: 1.2;
@@ -242,29 +248,30 @@ img {
   }
   .btn-sm {
     min-height: 42px;
-    padding: 9px 16px;
+    padding: 9px 14px;
+    gap: 8px;
     font-size: 14.5px;
   }
 
   /* Асимметриялық жұмсақ карточкалар */
   .card {
     background: var(--color-paper);
-    border-radius: 28px;
+    border-radius: var(--r);
     box-shadow:
       var(--shadow-soft),
       inset 0 0 0 1px rgb(239 226 207 / 0.7);
   }
   .shape-a {
-    border-radius: 32px 32px 32px 12px;
+    border-radius: var(--r) var(--r) var(--r) var(--r-s);
   }
   .shape-b {
-    border-radius: 12px 32px 32px 32px;
+    border-radius: var(--r-s) var(--r) var(--r) var(--r);
   }
   .shape-c {
-    border-radius: 32px 12px 32px 32px;
+    border-radius: var(--r) var(--r-s) var(--r) var(--r);
   }
   .shape-d {
-    border-radius: 32px 32px 12px 32px;
+    border-radius: var(--r) var(--r) var(--r-s) var(--r);
   }
 
   .lift {

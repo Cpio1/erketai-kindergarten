@@ -16,18 +16,18 @@ export function Documents() {
       <div className="wrap">
         <SectionHead id="documents-title" eyebrow={t.documents.eyebrow} title={t.documents.title} lead={t.documents.lead} />
 
-        <ul className="mt-8 grid gap-4 md:grid-cols-2 md:gap-6">
+        <ul className="mt-6 grid gap-3 md:mt-7 md:grid-cols-2 md:gap-4">
           {branches.map((b, i) => {
             const tone = toneClasses[b.tone];
             const ready = Boolean(b.documentsUrl);
             return (
-              <Reveal as="li" key={b.id} delay={i * 0.06} className={`card flex min-w-0 flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6 ${i === 0 ? "shape-b" : "shape-d"}`}>
-                <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${tone.soft} ${tone.text}`}>
-                  <FolderOpen className="h-7 w-7" aria-hidden />
+              <Reveal as="li" key={b.id} delay={i * 0.06} className={`card flex min-w-0 flex-col gap-3.5 p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5 ${i === 0 ? "shape-b" : "shape-d"}`}>
+                <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl ${tone.soft} ${tone.text}`}>
+                  <FolderOpen className="h-5 w-5" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="font-display text-base font-semibold text-ink">{b.name[lang]}</p>
-                  <p className="mt-0.5 text-[15px] text-ink-soft">{t.documents.folder} · Google Drive</p>
+                  <p className="mt-0.5 text-[14px] text-ink-soft">{t.documents.folder} · Google Drive</p>
                 </div>
                 {ready ? (
                   <a href={b.documentsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm w-full sm:w-auto">
@@ -45,7 +45,7 @@ export function Documents() {
           })}
         </ul>
 
-        <Reveal className="mt-5 flex items-start gap-2.5 text-[15px] text-ink-soft">
+        <Reveal className="mt-4 flex items-start gap-2 text-[14px] text-ink-soft sm:text-[15px]">
           <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-teal" aria-hidden />
           <p>{t.documents.note}</p>
         </Reveal>

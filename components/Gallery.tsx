@@ -10,16 +10,17 @@ import { InstagramIcon, Reveal, SectionHead } from "./ui";
 
 type Filter = "all" | BranchId;
 
-function useIsMobile() {
-  const [mobile, setMobile] = useState(false);
+/** Бір «бетте» қанша фото: телефон 2×3, планшет 3×2, компьютер 4×2 — әрқашан толық қатарлар */
+function usePerPage() {
+  const [perPage, setPerPage] = useState(8);
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const on = () => setMobile(mq.matches);
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const on = () => setPerPage(mq.matches ? 8 : 6);
     on();
     mq.addEventListener("change", on);
     return () => mq.removeEventListener("change", on);
   }, []);
-  return mobile;
+  return perPage;
 }
 
 function Lightbox({ photos, index, onClose, onIndex }: { photos: GalleryPhoto[]; index: number | null; onClose: () => void; onIndex: (i: number) => void }) {
@@ -81,24 +82,28 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [pages, setPages] = useState(1);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const isMobile = useIsMobile();
-  const perPage = isMobile ? 6 : 8;
+  const perPage = usePerPage();
 
   const list = useMemo(() => (filter === "all" ? photos : photos.filter((p) => p.branch === filter)), [photos, filter]);
   const visible = list.slice(0, pages * perPage);
   const hasMore = visible.length < list.length;
 
-  const filters: { id: Filter; label: string; count: number }[] = [
-    { id: "all", label: t.common.all, count: photos.length },
-    ...branches.map((b) => ({ id: b.id as Filter, label: b.name[lang], count: photos.filter((p) => p.branch === b.id).length })),
+  const filters: { id: Filter; label: string; short: string; count: number }[] = [
+    { id: "all", label: t.common.all, short: t.common.all, count: photos.length },
+    ...branches.map((b) => ({
+      id: b.id as Filter,
+      label: b.name[lang],
+      short: t.branchShort[b.id],
+      count: photos.filter((p) => p.branch === b.id).length,
+    })),
   ];
 
   return (
     <section id="gallery" aria-labelledby="gallery-title" className="section bg-paper/60">
       <div className="wrap">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <SectionHead id="gallery-title" eyebrow={t.gallery.eyebrow} title={t.gallery.title} lead={t.gallery.lead} />
-          <Reveal className="-mx-1 flex flex-wrap gap-2 px-1" >
+          <Reveal className="flex flex-wrap gap-1.5 sm:gap-2">
             {filters.map((f) => (
               <button
                 key={f.id}
@@ -108,11 +113,12 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
                   setFilter(f.id);
                   setPages(1);
                 }}
-                className={`min-h-11 rounded-full px-4 text-[14.5px] font-extrabold transition-colors ${
+                className={`min-h-10 rounded-full px-3.5 text-[13.5px] font-extrabold transition-colors sm:min-h-11 sm:px-4 sm:text-[14.5px] ${
                   filter === f.id ? "bg-ink text-white" : "bg-paper text-ink-soft shadow-[inset_0_0_0_1.5px_var(--color-line)] hover:text-ink"
                 }`}
               >
-                {f.label}
+                <span className="sm:hidden">{f.short}</span>
+                <span className="hidden sm:inline">{f.label}</span>
                 <span className={`ml-1.5 text-xs ${filter === f.id ? "text-white/70" : "text-ink-soft/70"}`}>{f.count}</span>
               </button>
             ))}
@@ -121,22 +127,23 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
 
         {visible.length ? (
           <>
-            <ul className="mt-8 grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+            {/* Телефон: 2 баған, шаршы превью · Планшет: 3 баған · Компьютер: 4 баған, 4:3 */}
+            <ul className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 md:mt-6 md:grid-cols-3 lg:grid-cols-4">
               {visible.map((p, i) => (
-                <li key={p.src} className={`${!isMobile && i % 8 === 0 ? "md:col-span-2 md:row-span-2" : ""}`}>
+                <li key={p.src} className="min-w-0">
                   <button
                     type="button"
                     onClick={() => setLightbox(i)}
                     aria-label={`${t.gallery.open}: ${t.gallery.photo} ${i + 1}`}
-                    className={`group relative block h-full w-full overflow-hidden bg-cream-deep ${
-                      ["rounded-[22px_22px_22px_8px]", "rounded-[8px_22px_22px_22px]", "rounded-[22px_8px_22px_22px]", "rounded-[22px_22px_8px_22px]"][i % 4]
-                    } aspect-square md:aspect-[4/3] ${!isMobile && i % 8 === 0 ? "md:aspect-auto md:min-h-full" : ""}`}
+                    className={`group relative block aspect-square w-full overflow-hidden bg-cream-deep md:aspect-[4/3] ${
+                      ["rounded-[18px_18px_18px_6px]", "rounded-[6px_18px_18px_18px]", "rounded-[18px_6px_18px_18px]", "rounded-[18px_18px_6px_18px]"][i % 4]
+                    }`}
                   >
                     <Image
                       src={p.src}
                       alt=""
                       fill
-                      sizes="(min-width:1024px) 25vw, (min-width:768px) 33vw, 50vw"
+                      sizes="(min-width:1280px) 290px, (min-width:1024px) 25vw, (min-width:768px) 33vw, 50vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </button>
@@ -144,7 +151,7 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
               ))}
             </ul>
             {hasMore ? (
-              <div className="mt-8 flex justify-center">
+              <div className="mt-5 flex justify-center md:mt-6">
                 <button type="button" onClick={() => setPages((n) => n + 1)} className="btn btn-sun w-full sm:w-auto">
                   <Plus className="h-4 w-4" aria-hidden />
                   {t.common.more}
@@ -154,7 +161,7 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
             <Lightbox photos={visible} index={lightbox} onClose={() => setLightbox(null)} onIndex={setLightbox} />
           </>
         ) : (
-          <Reveal className="shape-a mt-8 grid gap-5 border-2 border-dashed border-line bg-paper p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:p-8">
+          <Reveal className="shape-a mt-5 grid gap-4 border-2 border-dashed border-line bg-paper p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:p-8">
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-sun-soft text-sun-deep">
               <ImageIcon className="h-7 w-7" aria-hidden />
             </span>

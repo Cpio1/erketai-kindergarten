@@ -51,13 +51,13 @@ export function SectionHead({
   return (
     <Reveal className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       <span className="eyebrow">
-        <Sparkle className="h-3.5 w-3.5 text-sun" aria-hidden />
+        <Sparkle className="h-3 w-3 text-sun" aria-hidden />
         {eyebrow}
       </span>
-      <h2 id={id} className="h2 mt-4 text-ink">
+      <h2 id={id} className="h2 mt-3 text-ink">
         {title}
       </h2>
-      {lead ? <p className="lead mt-4">{lead}</p> : null}
+      {lead ? <p className="lead mt-2.5 md:mt-3">{lead}</p> : null}
     </Reveal>
   );
 }
