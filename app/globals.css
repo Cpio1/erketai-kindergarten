@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+/* Сайт әрқашан ашық түсте: dark-вариант ешқашан қосылмайды */
+@custom-variant dark (&:where([data-theme="never-dark"], [data-theme="never-dark"] *));
+
+@theme {
+  --color-cream: #fff8ef;
+  --color-cream-deep: #fbeedd;
+  --color-paper: #fffdf9;
+
+  --color-teal: #2fb3a8;
+  --color-teal-deep: #137d75;
+  --color-teal-soft: #d9f3ef;
+  --color-teal-mist: #eefaf8;
+
+  --color-sun: #ffc94d;
+  --color-sun-deep: #a86b00;
+  --color-sun-soft: #fff0c7;
+
+  --color-peach: #ff9f7f;
+  --color-peach-deep: #c2512c;
+  --color-peach-soft: #ffe5da;
+
+  --color-violet: #8a6fe8;
+  --color-violet-deep: #5b3fc4;
+  --color-violet-soft: #ece6ff;
+
+  --color-ink: #22304a;
+  --color-ink-soft: #56637a;
+  --color-line: #efe2cf;
+
+  --color-wa: #1fa855;
+  --color-wa-deep: #14803f;
+
+  --font-sans: var(--font-nunito), ui-rounded, system-ui, sans-serif;
+  --font-display: var(--font-unbounded), var(--font-nunito), system-ui, sans-serif;
+
+  --shadow-soft: 0 12px 32px -18px rgb(34 48 74 / 0.22);
+  --shadow-lift: 0 26px 50px -24px rgb(34 48 74 / 0.32);
+
+  --breakpoint-xs: 25rem;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spin-slow: spin 22s linear infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+}
+
+:root {
+  color-scheme: light only;
+  /* Бекітілген шапка биіктігі — якорьлер мен scroll-margin осыны қолданады */
+  --header-h: 64px;
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --header-h: 76px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  -webkit-text-size-adjust: 100%;
+  background: var(--color-cream);
+  /* Көлденең скроллға қарсы қосымша сақтандыру (clip — sticky/scroll-ды бұзбайды) */
+  overflow-x: clip;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--header-h) + 12px);
+}
+
+::selection {
+  background: var(--color-sun-soft);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-violet);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 24px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .wrap {
+      padding-inline: 32px;
+    }
+  }
+
+  .section {
+    position: relative;
+    padding-block: 64px;
+  }
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 88px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .section {
+      padding-block: 104px;
+    }
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--color-paper);
+    color: var(--color-teal-deep);
+    box-shadow: inset 0 0 0 1.5px var(--color-teal-soft);
+  }
+
+  .h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    font-size: clamp(1.5rem, 1.05rem + 1.9vw, 2.6rem);
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  .lead {
+    color: var(--color-ink-soft);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 800;
+    font-size: 15.5px;
+    line-height: 1.2;
+    text-align: center;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
+    max-width: 100%;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+  .btn:active {
+    transform: translateY(0);
+  }
+  .btn-primary {
+    background: var(--color-teal-deep);
+    color: #fff;
+    box-shadow: 0 12px 24px -12px rgb(19 125 117 / 0.7);
+  }
+  .btn-primary:hover {
+    background: #0f6b64;
+  }
+  .btn-sun {
+    background: var(--color-sun);
+    color: var(--color-ink);
+    box-shadow: 0 12px 24px -14px rgb(168 107 0 / 0.6);
+  }
+  .btn-ghost {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 2px var(--color-line);
+  }
+  .btn-ghost:hover {
+    box-shadow: inset 0 0 0 2px var(--color-teal);
+  }
+  .btn-wa {
+    background: var(--color-wa-deep);
+    color: #fff;
+  }
+  .btn-wa:hover {
+    background: #0f6a33;
+  }
+  .btn-ig {
+    color: #fff;
+    background: linear-gradient(120deg, #7a4fe0 0%, #d8337f 55%, #f08a3c 100%);
+  }
+  .btn-sm {
+    min-height: 42px;
+    padding: 9px 16px;
+    font-size: 14.5px;
+  }
+
+  /* Асимметриялық жұмсақ карточкалар */
+  .card {
+    background: var(--color-paper);
+    border-radius: 28px;
+    box-shadow:
+      var(--shadow-soft),
+      inset 0 0 0 1px rgb(239 226 207 / 0.7);
+  }
+  .shape-a {
+    border-radius: 32px 32px 32px 12px;
+  }
+  .shape-b {
+    border-radius: 12px 32px 32px 32px;
+  }
+  .shape-c {
+    border-radius: 32px 12px 32px 32px;
+  }
+  .shape-d {
+    border-radius: 32px 32px 12px 32px;
+  }
+
+  .lift {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .lift:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      var(--shadow-lift),
+      inset 0 0 0 1px rgb(239 226 207 / 0.7);
+  }
+
+  .dots {
+    background-image: radial-gradient(currentColor 1.4px, transparent 1.6px);
+    background-size: 14px 14px;
+  }
+}
