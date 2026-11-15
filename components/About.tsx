@@ -1,10 +1,11 @@
 "use client";
 
+import { PlayArt } from "./PlayArt";
 import { Camera, HeartHandshake, Languages, Palette, Sprout } from "lucide-react";
 import Image from "next/image";
 import type { ComponentType, SVGProps } from "react";
 import { useSite } from "./Providers";
-import { Blob, Reveal, Ring, SectionHead, Sparkle } from "./ui";
+import { Reveal, Ring, SectionHead, Sparkle } from "./ui";
 
 type Key = "bilingual" | "atmosphere" | "development" | "activities" | "cameras";
 const POINTS: { key: Key; icon: ComponentType<SVGProps<SVGSVGElement>>; tone: string }[] = [
@@ -22,8 +23,7 @@ function PhotoTile({ src, alt, className, sizes, fallback }: { src?: string; alt
         <Image src={src} alt={alt} fill sizes={sizes} className="object-cover" />
       ) : (
         <div aria-hidden className={`absolute inset-0 grid place-items-center ${fallback === "a" ? "bg-sun-soft" : "bg-violet-soft"}`}>
-          <Blob className={`absolute right-2 bottom-2 h-14 w-14 ${fallback === "a" ? "text-sun/60" : "text-violet/30"}`} />
-          <Sparkle className={`relative h-8 w-8 ${fallback === "a" ? "text-sun-deep/70" : "text-violet-deep/60"}`} />
+          <PlayArt kind={fallback === "a" ? "book" : "sun"} className="!w-[65%]" />
         </div>
       )}
     </div>
@@ -43,7 +43,7 @@ export function About({ photos }: { photos: string[] }) {
               <span aria-hidden className="absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full bg-peach" />
               <PhotoTile src={photos[0]} alt={t.about.photoAlt} fallback="a" sizes="(min-width:1280px) 220px, 22vw" className="shape-c row-span-2 aspect-[3/4] shadow-soft" />
               <PhotoTile src={photos[1]} alt={t.about.photoAlt} fallback="b" sizes="(min-width:1280px) 180px, 18vw" className="shape-a mt-6 aspect-square shadow-soft" />
-              <div className="shape-d flex flex-col justify-center bg-teal px-4 py-3 text-white">
+              <div className="shape-d flex flex-col justify-center bg-teal-deep px-4 py-3 text-white">
                 <span className="font-display text-base font-bold lg:text-lg">ҚАЗ · РУС</span>
                 <span className="text-[13px] font-bold text-white/85">+ English</span>
               </div>

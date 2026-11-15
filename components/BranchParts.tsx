@@ -1,5 +1,6 @@
 "use client";
 
+import { PlayWorld } from "./PlayArt";
 import { BookOpen, Bus, Clock, Languages, MapPin, MessageCircleHeart, Mic, Music, Phone, Piano, Shield, UtensilsCrossed, Video, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import type { ActivityId, Branch, CommonFeature, ServiceId } from "@/lib/branches";
@@ -33,13 +34,7 @@ export function BranchPhoto({ branch, src, className, sizes }: { branch: Branch;
       {src ? (
         <Image src={src} alt={`${t.branches.photoAlt} — ${branch.name[lang]}`} fill sizes={sizes} className="object-cover" />
       ) : (
-        <div aria-hidden className="absolute inset-0">
-          <span className={`absolute top-4 right-4 h-6 w-6 rounded-full ${branch.tone === "teal" ? "bg-sun" : "bg-violet/70"}`} />
-          <span className="dots absolute bottom-3 left-4 h-8 w-14 text-white/80" />
-          <div className="absolute inset-0 grid place-items-center">
-            <span className={`font-display text-[clamp(1.6rem,1rem+2vw,2.25rem)] leading-none font-bold opacity-25 ${tone.text}`}>{t.branchShort[branch.id]}</span>
-          </div>
-        </div>
+        <PlayWorld />
       )}
       <span className={`absolute top-2.5 left-2.5 inline-flex items-center gap-1 rounded-full bg-paper/95 px-2.5 py-1 text-[11.5px] font-extrabold ${tone.text}`}>
         <Sparkle className="h-3 w-3" />
@@ -75,7 +70,7 @@ export function BranchFacts({ branch, withPhone = true }: { branch: Branch; with
           <dt className="sr-only">{t.common.phone}</dt>
           <Phone className={`mt-0.5 h-5 w-5 shrink-0 ${tone.text}`} aria-hidden />
           <dd>
-            <a href={branch.phone.href} className="font-semibold text-ink underline-offset-4 hover:underline">
+            <a href={branch.phone.href} className="inline-flex min-h-11 items-center font-semibold text-ink underline-offset-4 hover:underline">
               {branch.phone.display}
             </a>
           </dd>

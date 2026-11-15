@@ -1,22 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito, Unbounded } from "next/font/google";
+import { Nunito } from "next/font/google";
 import { branches } from "@/lib/branches";
 import { dictionaries } from "@/lib/i18n";
 import { getSiteMedia } from "@/lib/media";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
-/* Екі қаріп те қазақ әріптерін толық қолдайды: ә, ғ, қ, ң, ө, ұ, ү, һ, і */
+/* Cyrillic Extended includes Kazakh characters; Next self-hosts the font. */
 const nunito = Nunito({
   subsets: ["latin", "cyrillic", "cyrillic-ext"],
   variable: "--font-nunito",
-  display: "swap",
-});
-
-const unbounded = Unbounded({
-  subsets: ["latin", "cyrillic", "cyrillic-ext"],
-  weight: ["500", "600", "700"],
-  variable: "--font-unbounded",
   display: "swap",
 });
 
@@ -63,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#fff8ef",
+  themeColor: "#FFFAF0",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,
@@ -100,8 +93,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="kk"
-      className={`${nunito.variable} ${unbounded.variable}`}
-      style={{ colorScheme: "light", backgroundColor: "#fff8ef" }}
+      className={nunito.variable}
+      style={{ colorScheme: "light", backgroundColor: "#FFFAF0" }}
       suppressHydrationWarning
     >
       <body>

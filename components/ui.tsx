@@ -9,7 +9,7 @@ export function Reveal({
   children,
   className,
   delay = 0,
-  y = 18,
+  y = 12,
   as = "div",
 }: {
   children: ReactNode;
@@ -26,7 +26,7 @@ export function Reveal({
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </Comp>
@@ -130,7 +130,7 @@ export const toneClasses = {
     soft: "bg-teal-soft",
     mist: "bg-teal-mist",
     text: "text-teal-deep",
-    solid: "bg-teal",
+    solid: "bg-teal-deep",
     ring: "ring-teal",
     chip: "bg-teal-soft text-teal-deep",
   },
@@ -138,7 +138,7 @@ export const toneClasses = {
     soft: "bg-peach-soft",
     mist: "bg-[#fff3ee]",
     text: "text-peach-deep",
-    solid: "bg-peach",
+    solid: "bg-peach-deep",
     ring: "ring-peach",
     chip: "bg-peach-soft text-peach-deep",
   },

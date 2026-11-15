@@ -27,12 +27,17 @@ function Lightbox({ photos, index, onClose, onIndex }: { photos: GalleryPhoto[];
   const { t } = useSite();
   const ref = useRef<HTMLDialogElement>(null);
   const open = index !== null;
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
     if (open && !d.open) d.showModal();
     if (!open && d.open) d.close();
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
   }, [open]);
 
   const step = useCallback(
@@ -50,7 +55,16 @@ function Lightbox({ photos, index, onClose, onIndex }: { photos: GalleryPhoto[];
         if (e.key === "ArrowLeft") step(-1);
       }}
       aria-label={t.gallery.title}
-      className="m-auto h-dvh max-h-none w-screen max-w-none bg-transparent p-0 backdrop:bg-ink/85"
+      className="m-auto h-dvh max-h-none w-full max-w-none bg-cream p-0 backdrop:bg-ink/40"
+      onTouchStart={(e) => { if (e.touches.length !== 1) { touchStart.current = null; return; } const t = e.touches[0]; touchStart.current = { x: t.clientX, y: t.clientY }; }}
+      onTouchEnd={(e) => {
+        const start = touchStart.current;
+        touchStart.current = null;
+        if (!start || e.touches.length || e.changedTouches.length !== 1) return;
+        const dx = e.changedTouches[0].clientX - start.x;
+        const dy = e.changedTouches[0].clientY - start.y;
+        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+      }}
     >
       {index !== null ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-4 sm:p-8" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -61,7 +75,7 @@ function Lightbox({ photos, index, onClose, onIndex }: { photos: GalleryPhoto[];
             <button type="button" onClick={() => step(-1)} aria-label={t.gallery.prev} className="grid h-12 w-12 place-items-center rounded-full bg-paper text-ink">
               <ChevronLeft className="h-5 w-5" aria-hidden />
             </button>
-            <span className="min-w-16 text-center text-sm font-bold text-white">
+            <span className="min-w-16 text-center text-sm font-bold text-ink">
               {index + 1} / {photos.length}
             </span>
             <button type="button" onClick={() => step(1)} aria-label={t.gallery.next} className="grid h-12 w-12 place-items-center rounded-full bg-paper text-ink">
@@ -113,7 +127,7 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
                   setFilter(f.id);
                   setPages(1);
                 }}
-                className={`min-h-10 rounded-full px-3.5 text-[13.5px] font-extrabold transition-colors sm:min-h-11 sm:px-4 sm:text-[14.5px] ${
+                className={`min-h-11 rounded-full px-3.5 text-[13.5px] font-extrabold transition-colors sm:min-h-11 sm:px-4 sm:text-[14.5px] ${
                   filter === f.id ? "bg-ink text-white" : "bg-paper text-ink-soft shadow-[inset_0_0_0_1.5px_var(--color-line)] hover:text-ink"
                 }`}
               >
@@ -128,7 +142,7 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
         {visible.length ? (
           <>
             {/* Телефон: 2 баған, шаршы превью · Планшет: 3 баған · Компьютер: 4 баған, 4:3 */}
-            <ul className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 md:mt-6 md:grid-cols-3 lg:grid-cols-4">
+            <ul className="gallery-grid mt-5 grid grid-cols-2 gap-2 sm:gap-3 md:mt-6 md:grid-cols-3 lg:grid-cols-4">
               {visible.map((p, i) => (
                 <li key={p.src} className="min-w-0">
                   <button
@@ -158,7 +172,7 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
                 </button>
               </div>
             ) : null}
-            <Lightbox photos={visible} index={lightbox} onClose={() => setLightbox(null)} onIndex={setLightbox} />
+            <Lightbox photos={list} index={lightbox} onClose={() => setLightbox(null)} onIndex={setLightbox} />
           </>
         ) : (
           <Reveal className="shape-a mt-5 grid gap-4 border-2 border-dashed border-line bg-paper p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:p-8">

@@ -42,7 +42,7 @@ function MapBox({ branch }: { branch: Branch }) {
         <circle cx="340" cy="58" r="26" fill="#fff" opacity=".45" />
       </svg>
       <div className="relative flex h-full flex-col items-center justify-center px-4 text-center">
-        <span className={`grid h-10 w-10 animate-float place-items-center rounded-full text-white shadow-soft ${branch.tone === "teal" ? "bg-teal-deep" : "bg-peach-deep"}`}>
+        <span className={`grid h-10 w-10 place-items-center rounded-full text-white shadow-soft ${branch.tone === "teal" ? "bg-teal-deep" : "bg-peach-deep"}`}>
           <MapPin className="h-5 w-5" aria-hidden />
         </span>
         <span className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-paper px-3.5 py-1.5 text-[13px] font-extrabold text-ink shadow-soft transition-transform group-hover:-translate-y-0.5">
@@ -84,7 +84,7 @@ function ContactCard({ branch, i }: { branch: Branch; i: number }) {
               { label: lang === "kk" ? "Яндекс Карталар" : "Яндекс Карты", href: links.yandex },
               { label: "Google Maps", href: links.google },
             ].map((l) => (
-              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-cream px-3 text-[13px] font-extrabold text-ink transition-colors hover:bg-cream-deep">
+              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-cream px-3 text-[13px] font-extrabold text-ink transition-colors hover:bg-cream-deep">
                 <Navigation className={`h-3.5 w-3.5 ${tone.text}`} aria-hidden />
                 {l.label}
               </a>

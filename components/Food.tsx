@@ -1,5 +1,6 @@
 "use client";
 
+import { PlayArt } from "./PlayArt";
 import { Apple, CalendarClock, MessageCircleQuestion, Users } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useSite } from "./Providers";
@@ -23,6 +24,7 @@ export function Food() {
         <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-12">
           <div className="min-w-0">
             <SectionHead id="food-title" eyebrow={t.food.eyebrow} title={t.food.title} lead={t.food.lead} />
+            <div className="food-art-panel mt-4"><PlayArt kind="food" className="food-art"/><p className="text-sm font-bold text-ink-soft">{t.food.countLabel}</p></div>
 
             {/* Бес мезгіл — бес табақша */}
             <Reveal className="shape-c mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 bg-teal-deep px-4 py-4 text-white sm:px-5 lg:mt-6">
