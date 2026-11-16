@@ -63,6 +63,14 @@
   /* Асимметриялық карточкалардың бұрыштары экранға қарай кішірейеді */
   --r: clamp(20px, 12px + 1.4vw, 30px);
   --r-s: clamp(8px, 6px + 0.4vw, 12px);
+
+  /* Қозғалыс: slow-in/slow-out және «follow through» (сәл асып барып тоқтау) */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* UI жауабы ≤300ms (Doherty) */
+  --t-press: 90ms;
+  --t-ui: 220ms;
 }
 
 @media (min-width: 1280px) {
@@ -207,17 +215,30 @@ img {
     line-height: 1.2;
     text-align: center;
     transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      background-color 0.2s ease,
-      color 0.2s ease;
+      transform var(--t-ui) var(--ease-spring),
+      box-shadow var(--t-ui) var(--ease-out),
+      background-color 0.18s ease,
+      color 0.18s ease;
     max-width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
-  .btn:hover {
-    transform: translateY(-2px);
+  /* Hover тек тышқанда — телефонда «жабысып» қалмайды */
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn:hover > .btn-arrow {
+      transform: translateX(3px);
+    }
   }
+  /* Squash: басқанда лезде сәл сығылады, жібергенде серіппемен оралады */
   .btn:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.96);
+    transition-duration: var(--t-press);
+  }
+  .btn > .btn-arrow {
+    transition: transform var(--t-ui) var(--ease-spring);
   }
   .btn-primary {
     background: var(--color-teal-deep);
@@ -226,11 +247,15 @@ img {
   }
   .btn-primary:hover {
     background: #0f6b64;
+    box-shadow: 0 16px 28px -12px rgb(19 125 117 / 0.75);
   }
   .btn-sun {
     background: var(--color-sun);
     color: var(--color-ink);
     box-shadow: 0 12px 24px -14px rgb(168 107 0 / 0.6);
+  }
+  .btn-sun:hover {
+    box-shadow: 0 16px 28px -14px rgb(168 107 0 / 0.7);
   }
   .btn-ghost {
     background: var(--color-paper);
@@ -252,10 +277,17 @@ img {
     background: linear-gradient(120deg, #7a4fe0 0%, #d8337f 55%, #f08a3c 100%);
   }
   .btn-sm {
+    position: relative;
     min-height: 42px;
     padding: 9px 14px;
     gap: 8px;
     font-size: 14.5px;
+  }
+  /* Кішкентай батырмалардың басу аймағы көрінбейтін түрде үлкейеді */
+  .btn-sm::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
   }
 
   /* Асимметриялық жұмсақ карточкалар */
@@ -281,18 +313,129 @@ img {
 
   .lift {
     transition:
-      transform 0.25s ease,
-      box-shadow 0.25s ease;
+      transform 0.28s var(--ease-spring),
+      box-shadow 0.28s var(--ease-out);
   }
-  .lift:hover {
-    transform: translateY(-4px);
-    box-shadow:
-      var(--shadow-lift),
-      inset 0 0 0 1px rgb(239 226 207 / 0.7);
+  @media (hover: hover) {
+    .lift:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        var(--shadow-lift),
+        inset 0 0 0 1px rgb(239 226 207 / 0.7);
+    }
+  }
+  .lift:active {
+    transform: translateY(-1px) scale(0.985);
+    transition-duration: var(--t-press);
+  }
+
+  /* Иконка-батырмалар үшін жалпы «басу» реакциясы */
+  .press {
+    transition:
+      transform var(--t-ui) var(--ease-spring),
+      background-color 0.18s ease,
+      color 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  @media (hover: hover) {
+    .press:hover {
+      transform: scale(1.06);
+    }
+  }
+  .press:active {
+    transform: scale(0.9);
+    transition-duration: var(--t-press);
+  }
+
+  /* Декоративті фигуралар: доға бойымен баяу айналу (moving in arcs) */
+  .orbit {
+    animation: orbit 9s linear infinite;
+  }
+  .orbit-rev {
+    animation: orbit 12s linear infinite reverse;
+  }
+  /* Жұлдызшаның «жыпылықтауы» — secondary action */
+  .twinkle {
+    animation: twinkle 3.6s var(--ease-in-out) infinite;
+  }
+
+  /* «Тағы көрсету» кейін жаңа суреттер кезекпен пайда болады */
+  .pop-in {
+    animation: pop-in 0.42s var(--ease-spring) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+
+  /* Модаль терезелер: ашылу (pose to pose) */
+  .dlg[open] {
+    animation: dlg-in 0.28s var(--ease-spring);
+  }
+  .dlg[open]::backdrop {
+    animation: fade-in 0.22s var(--ease-out);
+  }
+  .lb[open] {
+    animation: fade-in 0.2s var(--ease-out);
+  }
+  .lb[open]::backdrop {
+    animation: fade-in 0.22s var(--ease-out);
+  }
+  /* Лайтбокс: сурет ауысқанда бағытқа қарай сырғып келеді */
+  .lb-slide {
+    animation: lb-slide 0.26s var(--ease-out) both;
+  }
+  .icon-swap {
+    animation: icon-swap 0.22s var(--ease-spring);
   }
 
   .dots {
     background-image: radial-gradient(currentColor 1.4px, transparent 1.6px);
     background-size: 14px 14px;
+  }
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(4px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(4px) rotate(-360deg);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.22) rotate(16deg);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dlg-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+}
+@keyframes lb-slide {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--dir, 0) * 28px)) scale(calc(1 - (1 - var(--dir, 0) * var(--dir, 0)) * 0.04));
+  }
+}
+@keyframes icon-swap {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
   }
 }

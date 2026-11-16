@@ -24,18 +24,18 @@ export function EnrollDialog() {
       aria-labelledby="enroll-title"
       onClose={() => setEnrollOpen(false)}
       onClick={(e) => e.target === e.currentTarget && setEnrollOpen(false)}
-      className="m-auto w-[calc(100vw-32px)] max-w-lg rounded-[28px_28px_28px_10px] bg-paper p-0 text-ink shadow-lift backdrop:bg-ink/55 backdrop:backdrop-blur-sm"
+      className="dlg m-auto w-[calc(100vw-32px)] max-w-lg rounded-[28px_28px_28px_10px] bg-paper p-0 text-ink shadow-lift backdrop:bg-ink/55 backdrop:backdrop-blur-sm"
     >
       <div className="relative max-h-[calc(100dvh-48px)] overflow-y-auto p-5 sm:p-7">
         <button
           type="button"
           onClick={() => setEnrollOpen(false)}
           aria-label={t.gallery.close}
-          className="absolute top-4 right-4 grid h-11 w-11 place-items-center rounded-full bg-cream text-ink hover:bg-cream-deep"
+          className="press absolute top-4 right-4 grid h-11 w-11 place-items-center rounded-full bg-cream text-ink hover:bg-cream-deep"
         >
           <X className="h-5 w-5" aria-hidden />
         </button>
-        <Sparkle aria-hidden className="h-6 w-6 text-sun" />
+        <Sparkle aria-hidden className="twinkle h-6 w-6 text-sun" />
         <h2 id="enroll-title" className="mt-2 pr-12 font-display text-xl font-semibold sm:text-2xl">
           {t.enroll.title}
         </h2>

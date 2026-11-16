@@ -33,7 +33,7 @@ export function Clubs() {
 
         <div id="clubs-panel" role="tabpanel" aria-labelledby={`clubs-tab-${b.id}`} aria-live="polite" className="mt-6">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={b.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.25 }}>
+            <motion.div key={b.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] } }} exit={{ opacity: 0, y: -6, transition: { duration: 0.12, ease: "easeIn" } }}>
               <h3 className="text-xs font-extrabold tracking-wider text-ink-soft uppercase">
                 {t.clubs.clubsLabel} · {b.name[lang]}
               </h3>

@@ -30,7 +30,7 @@ function PhotoTile({ src, alt, className, sizes, fallback }: { src?: string; alt
   );
 }
 
-export function About({ photos }: { photos: string[] }) {
+export function About({ photos, wide }: { photos: string[]; wide: string | null }) {
   const { t } = useSite();
   return (
     <section id="about" aria-labelledby="about-title" className="section">
@@ -39,8 +39,8 @@ export function About({ photos }: { photos: string[] }) {
           {/* Десктоп: ықшам коллаж. Декорлар тек бос жиекте (p-4), суреттерге түспейді */}
           <Reveal className="relative hidden md:block">
             <div className="relative mx-auto grid max-w-[420px] grid-cols-[1fr_0.8fr] gap-3 p-4">
-              <Ring aria-hidden className="absolute top-0 left-0 h-3.5 w-3.5 text-teal/70" />
-              <span aria-hidden className="absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full bg-peach" />
+              <Ring aria-hidden className="orbit absolute top-0 left-0 h-3.5 w-3.5 text-teal/70" />
+              <span aria-hidden className="orbit-rev absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full bg-peach" />
               <PhotoTile src={photos[0]} alt={t.about.photoAlt} fallback="a" sizes="(min-width:1280px) 220px, 22vw" className="shape-c row-span-2 aspect-[3/4] shadow-soft" />
               <PhotoTile src={photos[1]} alt={t.about.photoAlt} fallback="b" sizes="(min-width:1280px) 180px, 18vw" className="shape-a mt-6 aspect-square shadow-soft" />
               <div className="shape-d flex flex-col justify-center bg-teal px-4 py-3 text-white">
@@ -55,7 +55,7 @@ export function About({ photos }: { photos: string[] }) {
 
             {/* Мобильді: бір сурет */}
             <Reveal className="mt-5 md:hidden">
-              <PhotoTile src={photos[0]} alt={t.about.photoAlt} fallback="a" sizes="100vw" className="shape-b aspect-[16/9] shadow-soft" />
+              <PhotoTile src={wide ?? undefined} alt={t.about.photoAlt} fallback="a" sizes="100vw" className="shape-b aspect-[16/9] shadow-soft" />
             </Reveal>
 
             {/* Десктоп: 2 бағанды карточкалар */}

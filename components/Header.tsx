@@ -38,11 +38,14 @@ function LangSwitch({ className = "" }: { className?: string }) {
           type="button"
           onClick={() => setLang(l)}
           aria-pressed={lang === l}
-          className={`min-h-9 min-w-11 rounded-full px-3 text-sm font-extrabold transition-colors ${
-            lang === l ? "bg-ink text-white" : "text-ink-soft hover:text-ink"
+          className={`relative min-h-9 min-w-11 rounded-full px-3 text-sm font-extrabold transition-colors duration-200 active:scale-95 ${
+            lang === l ? "text-white" : "text-ink-soft hover:text-ink"
           }`}
         >
-          {l === "kk" ? "KZ" : "RU"}
+          {lang === l ? (
+            <motion.span layoutId="lang-pill" aria-hidden className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 520, damping: 34 }} />
+          ) : null}
+          <span className="relative">{l === "kk" ? "KZ" : "RU"}</span>
         </button>
       ))}
     </div>
@@ -184,13 +187,13 @@ export function Header({ logo }: { logo: string | null }) {
           <button
             ref={toggleRef}
             type="button"
-            className="grid h-11 w-11 place-items-center rounded-full bg-ink text-white xl:hidden"
+            className="press grid h-11 w-11 place-items-center rounded-full bg-ink text-white xl:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? t.nav.close : t.nav.menu}
             onClick={() => setOpen((v) => !v)}
           >
-            {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
+            {open ? <X key="x" className="icon-swap h-5 w-5" aria-hidden /> : <Menu key="m" className="icon-swap h-5 w-5" aria-hidden />}
           </button>
         </div>
       </div>
@@ -205,24 +208,29 @@ export function Header({ logo }: { logo: string | null }) {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-x-0 top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-y-auto overscroll-contain bg-cream xl:hidden"
           >
             <nav aria-label="Mobile" className="wrap pb-10 pt-3" lang={lang}>
               <ul className="grid gap-1.5 sm:grid-cols-2 sm:gap-2">
                 {SECTION_IDS.map((id, i) => (
-                  <li key={id}>
+                  <motion.li
+                    key={id}
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: 0.03 + i * 0.022, ease: [0.22, 1, 0.36, 1] }}
+                  >
                     <a
                       href={`#${id}`}
                       onClick={() => setOpen(false)}
-                      className={`flex min-h-13 items-center justify-between rounded-2xl px-4 py-3 text-[17px] font-extrabold ${
+                      className={`flex min-h-13 items-center justify-between rounded-2xl px-4 py-3 text-[17px] font-extrabold transition-transform duration-150 active:scale-[0.98] ${
                         active === id ? "bg-teal-soft text-teal-deep" : "bg-paper text-ink"
                       }`}
                     >
                       {t.nav[id]}
                       <span aria-hidden className={`h-2.5 w-2.5 rounded-full ${["bg-sun", "bg-teal", "bg-peach", "bg-violet"][i % 4]}`} />
                     </a>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
 
@@ -244,7 +252,7 @@ export function Header({ logo }: { logo: string | null }) {
                     href={b.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-2xl bg-paper px-4 py-3"
+                    className="flex items-center gap-3 rounded-2xl bg-paper px-4 py-3 transition-transform duration-150 active:scale-[0.98]"
                   >
                     <WhatsAppIcon className="h-5 w-5 shrink-0 text-wa-deep" />
                     <span className="min-w-0">

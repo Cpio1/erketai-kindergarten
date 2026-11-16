@@ -35,7 +35,7 @@ export function BranchTabs({ idPrefix, className = "" }: { idPrefix: string; cla
             aria-controls={`${idPrefix}-panel`}
             tabIndex={selected ? 0 : -1}
             onClick={() => setBranch(b.id)}
-            className={`relative min-h-11 rounded-full px-3 text-[14.5px] font-extrabold transition-colors sm:px-6 ${selected ? "text-white" : "text-ink-soft hover:text-ink"}`}
+            className={`relative min-h-11 rounded-full px-3 text-[14.5px] font-extrabold transition-[color,transform] duration-200 active:scale-[0.97] sm:px-6 ${selected ? "text-white" : "text-ink-soft hover:text-ink"}`}
           >
             {selected ? (
               <motion.span layoutId={`${idPrefix}-pill`} className={`absolute inset-0 rounded-full ${b.tone === "teal" ? "bg-teal-deep" : "bg-peach-deep"}`} transition={{ type: "spring", stiffness: 420, damping: 34 }} />
@@ -74,7 +74,7 @@ function DesktopCard({ branch, photo }: { branch: Branch; photo: string | null }
             onClick={() => setBranch(branch.id)}
             aria-pressed={isSel}
             aria-controls="branches-panel"
-            className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-extrabold transition-colors ${
+            className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-extrabold transition-[color,background-color,transform] duration-200 active:scale-95 ${
               isSel ? `${tone.solid} text-white` : `${tone.chip} hover:brightness-95`
             }`}
           >
@@ -117,9 +117,8 @@ function DesktopBranches({ photos }: { photos: Photos }) {
           <motion.div
             key={sel.id}
             initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.28 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] } }}
+            exit={{ opacity: 0, y: -6, transition: { duration: 0.12, ease: "easeIn" } }}
             className={`shape-d grid gap-5 p-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.6fr)] lg:gap-8 lg:p-6 ${tone.mist}`}
           >
             {/* Мекенжай мен кесте жоғарыдағы карточкада бар — мұнда қайталанбайды */}
@@ -170,10 +169,10 @@ function MobileCard({ branch, photo }: { branch: Branch; photo: string | null })
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen((v) => !v)}
-          className={`mt-2.5 flex min-h-11 w-full items-center justify-between rounded-2xl px-4 text-[14.5px] font-extrabold ${tone.chip}`}
+          className={`mt-2.5 flex min-h-11 w-full items-center justify-between rounded-2xl px-4 text-[14.5px] font-extrabold transition-transform duration-150 active:scale-[0.98] ${tone.chip}`}
         >
           {open ? t.branches.hideDetails : t.branches.showDetails}
-          <ChevronDown className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
+          <ChevronDown className={`h-5 w-5 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${open ? "rotate-180" : ""}`} aria-hidden />
         </button>
         <AnimatePresence initial={false}>
           {open ? (
@@ -183,7 +182,7 @@ function MobileCard({ branch, photo }: { branch: Branch; photo: string | null })
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.2 } }}
               className="overflow-hidden"
             >
               <div className="pt-4">

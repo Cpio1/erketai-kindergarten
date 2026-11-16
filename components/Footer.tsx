@@ -42,10 +42,10 @@ export function Footer({ logo }: { logo: string | null }) {
                 {b.phone.display}
               </a>
               <div className="mt-3 flex gap-2">
-                <a href={b.whatsapp} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp — ${b.name[lang]}`} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 hover:bg-white/20">
+                <a href={b.whatsapp} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp — ${b.name[lang]}`} className="press grid h-11 w-11 place-items-center rounded-full bg-white/10 hover:bg-white/20">
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
-                <a href={b.instagram.url} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${b.instagram.handle}`} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 hover:bg-white/20">
+                <a href={b.instagram.url} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${b.instagram.handle}`} className="press grid h-11 w-11 place-items-center rounded-full bg-white/10 hover:bg-white/20">
                   <InstagramIcon className="h-5 w-5" />
                 </a>
               </div>

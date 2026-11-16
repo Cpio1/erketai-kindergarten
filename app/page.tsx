@@ -22,7 +22,7 @@ export default function Home() {
       <Header logo={media.logo} />
       <main id="main">
         <Hero hero={media.hero} />
-        <About photos={media.about} />
+        <About photos={media.about} wide={media.aboutWide} />
         <Branches photos={media.branchPhotos} />
         <Groups />
         <Food />

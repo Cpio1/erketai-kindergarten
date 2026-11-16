@@ -61,7 +61,7 @@ function DesktopHero({ hero }: { hero: string | null }) {
         <div className="min-w-0">
           <Reveal>
             <span className="eyebrow">
-              <Sparkle className="h-3 w-3 text-sun" />
+              <Sparkle className="twinkle h-3 w-3 text-sun" />
               {t.hero.eyebrow}
             </span>
           </Reveal>
@@ -75,7 +75,7 @@ function DesktopHero({ hero }: { hero: string | null }) {
           <Reveal delay={0.15} className="mt-6 flex flex-wrap gap-3 lg:mt-8">
             <button type="button" onClick={() => setEnrollOpen(true)} className="btn btn-primary">
               {t.hero.enroll}
-              <ArrowRight className="h-4 w-4" aria-hidden />
+              <ArrowRight className="btn-arrow h-4 w-4" aria-hidden />
             </button>
             <a href="#branches" className="btn btn-ghost">
               {t.hero.branches}
@@ -88,14 +88,15 @@ function DesktopHero({ hero }: { hero: string | null }) {
           суретке де, мәтінге де түспейді.
         */}
         <motion.div
-          initial={reduce ? false : { opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          initial={reduce ? false : { opacity: 0, scale: 0.96, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          /* Staging: басты сурет мәтіннен сәл кейін, серіппемен «қонады» */
+          transition={{ default: { type: "spring", duration: 0.7, bounce: 0.2, delay: 0.08 }, opacity: { duration: 0.45, delay: 0.08 } }}
           className="relative min-w-0 p-5"
         >
-          <span aria-hidden className="absolute top-0 right-8 h-4 w-4 rounded-full bg-sun" />
-          <Sparkle aria-hidden className="absolute top-8 left-0 h-3.5 w-3.5 text-teal" />
-          <Ring aria-hidden className="absolute right-0 bottom-16 h-3.5 w-3.5 text-violet/70" />
+          <span aria-hidden className="orbit absolute top-0 right-8 h-4 w-4 rounded-full bg-sun" />
+          <Sparkle aria-hidden className="twinkle absolute top-8 left-0 h-3.5 w-3.5 text-teal" />
+          <Ring aria-hidden className="orbit-rev absolute right-0 bottom-16 h-3.5 w-3.5 text-violet/70" />
 
           {/* Биіктігі экран биіктігіне байланысты: 1280×720-да да толық көрінеді */}
           <div className="shape-a relative aspect-[5/4] max-h-[clamp(280px,calc(100svh-var(--header-h)-230px),440px)] w-full overflow-hidden bg-teal-soft shadow-soft">
@@ -125,7 +126,7 @@ function MobileHero({ hero }: { hero: string | null }) {
     <div className="wrap md:hidden">
       <Reveal>
         <span className="eyebrow text-[11px] tracking-[0.03em]">
-          <Sparkle className="h-3 w-3 text-sun" />
+          <Sparkle className="twinkle h-3 w-3 text-sun" />
           {t.hero.eyebrow}
         </span>
       </Reveal>
@@ -141,7 +142,7 @@ function MobileHero({ hero }: { hero: string | null }) {
       <Reveal delay={0.1} className="mt-5 grid gap-2.5">
         <button type="button" onClick={() => setEnrollOpen(true)} className="btn btn-primary w-full px-4">
           {t.hero.enroll}
-          <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+          <ArrowRight className="btn-arrow h-4 w-4 shrink-0" aria-hidden />
         </button>
         <a href="#branches" className="btn btn-ghost w-full px-4">
           {t.hero.branches}

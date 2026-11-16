@@ -23,10 +23,14 @@ export function Reveal({
   return (
     <Comp
       className={className}
-      initial={reduce ? false : { opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduce ? false : { opacity: 0, y, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      /* Серіппе: жұмсақ үдеу және сәл асып барып тоқтау (follow through) */
+      transition={{
+        default: { type: "spring", duration: 0.6, bounce: 0.18, delay },
+        opacity: { duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] },
+      }}
     >
       {children}
     </Comp>
@@ -51,7 +55,7 @@ export function SectionHead({
   return (
     <Reveal className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       <span className="eyebrow">
-        <Sparkle className="h-3 w-3 text-sun" aria-hidden />
+        <Sparkle className="twinkle h-3 w-3 text-sun" aria-hidden />
         {eyebrow}
       </span>
       <h2 id={id} className="h2 mt-3 text-ink">

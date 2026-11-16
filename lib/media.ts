@@ -7,25 +7,31 @@ import type { BranchId } from "./branches";
  * Файл жоқ болса — сайт бәрібір жиналады, тиісті жерде әдемі «бос» күй көрсетіледі.
  *
  *   main-page.(png|jpg|webp)        — басты экран суреті (+ Open Graph)
- *   about-1.*, about-2.*            — «Біз туралы» бөлімі
+ *   main-page2.*, about-1.*, about-2.* — «Біз туралы» бөлімі
+ *                                     (жоқ болса — ABOUT_FALLBACK ішіндегі нақты фотолар)
  *   alatau.*, auezov.*              — филиал карточкаларының суреттері
  *   logo.(svg|png|webp)             — логотип
- *   Галерея (қалған суреттер):
- *     alatau-*.jpg  немесе  images/alatau/*.jpg   — Алатау филиалы
- *     auezov-*.jpg  немесе  images/auezov/*.jpg   — Әуезов филиалы
- *     басқа кез келген сурет                     — ортақ (тек «Барлығы» сүзгісінде)
+ *   Галерея — қалған барлық суреттер (images/ және images/alatau/, images/auezov/ ішкі папкалары),
+ *   GALLERY_SKIP тізіміндегілерден басқа.
  */
+
+/** main-page2 / about-* жоқ кезде «Біз туралы» үшін: [тік коллаж суреті, кең сурет (мобильді)] */
+const ABOUT_FALLBACK = ["image8", "image4"];
+/** Галереяға қосылмайтын суреттер: image — басты суреттің (main-page) іс жүзіндегі қайталамасы */
+const GALLERY_SKIP = ["image"];
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 const IMAGES_DIR = path.join(PUBLIC_DIR, "images");
 const IMAGE_EXT = /\.(jpe?g|png|webp|avif)$/i;
 const LOGO_EXT = /\.(svg|png|webp|jpe?g)$/i;
 
-export type GalleryPhoto = { src: string; branch: BranchId | null };
+export type GalleryPhoto = { src: string };
 
 export type SiteMedia = {
   hero: string | null;
+  /** [0] — тік коллаж суреті, [1] — екінші сурет; мобильді нұсқа aboutWide қолданады */
   about: string[];
+  aboutWide: string | null;
   logo: string | null;
   branchPhotos: Record<BranchId, string | null>;
   gallery: GalleryPhoto[];
@@ -52,11 +58,6 @@ function list(dir: string): string[] {
 }
 
 const url = (...parts: string[]) => "/" + parts.map(encodeURIComponent).join("/");
-
-const BRANCH_PREFIX: Record<BranchId, RegExp> = {
-  alatau: /^(alatau|shapagat|filial-?1|branch-?1)[-_ ]/i,
-  auezov: /^(auezov|astana|filial-?2|branch-?2)[-_ ]/i,
-};
 
 const BRANCH_COVER: Record<BranchId, string[]> = {
   alatau: ["alatau", "branch-1", "filial-1"],
@@ -86,10 +87,11 @@ export function getSiteMedia(): SiteMedia {
 
   const hero = take(pick(["main-page", "hero"]));
   const logo = take(pick(["logo"], LOGO_EXT));
-  const about = ["about-1", "about-2", "main-page2"]
-    .map((n) => take(pick([n])))
-    .filter((x): x is string => Boolean(x))
-    .slice(0, 2);
+  const custom = ["main-page2", "about-1", "about-2"].filter((n) => pick([n]));
+  const aboutNames = (custom.length ? custom : ABOUT_FALLBACK.filter((n) => pick([n]))).slice(0, 2);
+  const about = aboutNames.map((n) => take(pick([n]))).filter((x): x is string => Boolean(x));
+  // Мобильдегі кең сурет: main-page2 болса — сол, әйтпесе көлденең (екінші) фото
+  const aboutWide = custom.length ? (about[0] ?? null) : (about[1] ?? about[0] ?? null);
   const branchPhotos = {
     alatau: take(pick(BRANCH_COVER.alatau)),
     auezov: take(pick(BRANCH_COVER.auezov)),
@@ -97,16 +99,15 @@ export function getSiteMedia(): SiteMedia {
 
   const gallery: GalleryPhoto[] = [];
   for (const f of files) {
-    if (used.has(f) || !IMAGE_EXT.test(f)) continue;
-    const branch = (Object.keys(BRANCH_PREFIX) as BranchId[]).find((id) => BRANCH_PREFIX[id].test(f)) ?? null;
-    gallery.push({ src: url("images", f), branch });
+    if (used.has(f) || !IMAGE_EXT.test(f) || GALLERY_SKIP.includes(base(f))) continue;
+    gallery.push({ src: url("images", f) });
   }
   for (const id of ["alatau", "auezov"] as BranchId[]) {
     for (const f of list(path.join(IMAGES_DIR, id))) {
-      if (IMAGE_EXT.test(f)) gallery.push({ src: url("images", id, f), branch: id });
+      if (IMAGE_EXT.test(f)) gallery.push({ src: url("images", id, f) });
     }
   }
 
-  cache = { hero, about, logo, branchPhotos, gallery };
+  cache = { hero, about, aboutWide, logo, branchPhotos, gallery };
   return cache;
 }
