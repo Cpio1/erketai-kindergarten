@@ -10,18 +10,8 @@ import { InstagramIcon, Reveal, SectionHead } from "./ui";
 
 type Filter = "all" | BranchId;
 
-/** Бір «бетте» қанша фото: телефон 2×3, планшет 3×2, компьютер 4×2 — әрқашан толық қатарлар */
-function usePerPage() {
-  const [perPage, setPerPage] = useState(8);
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const on = () => setPerPage(mq.matches ? 8 : 6);
-    on();
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return perPage;
-}
+/** Алдымен 6 фото (телефон 2×3, планшет/компьютер 3×2), «Тағы көрсету» тағы 6-ны ашады */
+const PER_PAGE = 6;
 
 function Lightbox({ photos, index, onClose, onIndex }: { photos: GalleryPhoto[]; index: number | null; onClose: () => void; onIndex: (i: number) => void }) {
   const { t } = useSite();
@@ -82,10 +72,9 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [pages, setPages] = useState(1);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const perPage = usePerPage();
 
   const list = useMemo(() => (filter === "all" ? photos : photos.filter((p) => p.branch === filter)), [photos, filter]);
-  const visible = list.slice(0, pages * perPage);
+  const visible = list.slice(0, pages * PER_PAGE);
   const hasMore = visible.length < list.length;
 
   const filters: { id: Filter; label: string; short: string; count: number }[] = [
@@ -127,15 +116,15 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
 
         {visible.length ? (
           <>
-            {/* Телефон: 2 баған, шаршы превью · Планшет: 3 баған · Компьютер: 4 баған, 4:3 */}
-            <ul className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 md:mt-6 md:grid-cols-3 lg:grid-cols-4">
+            {/* Телефон: 2 баған, шаршы превью · Планшет: 3 баған 4:3 · Компьютер: 3 баған 3:2 (ықшам) */}
+            <ul className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 md:mt-6 md:grid-cols-3">
               {visible.map((p, i) => (
                 <li key={p.src} className="min-w-0">
                   <button
                     type="button"
                     onClick={() => setLightbox(i)}
                     aria-label={`${t.gallery.open}: ${t.gallery.photo} ${i + 1}`}
-                    className={`group relative block aspect-square w-full overflow-hidden bg-cream-deep md:aspect-[4/3] ${
+                    className={`group relative block aspect-square w-full overflow-hidden bg-cream-deep md:aspect-[4/3] lg:aspect-[3/2] ${
                       ["rounded-[18px_18px_18px_6px]", "rounded-[6px_18px_18px_18px]", "rounded-[18px_6px_18px_18px]", "rounded-[18px_18px_6px_18px]"][i % 4]
                     }`}
                   >
@@ -143,7 +132,7 @@ export function Gallery({ photos }: { photos: GalleryPhoto[] }) {
                       src={p.src}
                       alt=""
                       fill
-                      sizes="(min-width:1280px) 290px, (min-width:1024px) 25vw, (min-width:768px) 33vw, 50vw"
+                      sizes="(min-width:1280px) 400px, (min-width:768px) 33vw, 50vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </button>

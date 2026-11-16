@@ -9,7 +9,7 @@ import { Reveal, Ring, Sparkle } from "./ui";
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
-/** Сурет жоқ кезде көрсетілетін иллюстрация (public/images/main-page.png қосылғанша) */
+/** Сурет жоқ кезде көрсетілетін иллюстрация (public/images/main-page.* қосылғанша) */
 function HeroIllustration() {
   return (
     <svg viewBox="0 0 400 320" className="h-full w-full" role="presentation" aria-hidden preserveAspectRatio="xMidYMid slice">
