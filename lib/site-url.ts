@@ -1,10 +1,17 @@
 /**
- * Сайттың толық адресі (SEO, Open Graph, sitemap үшін).
- * Өз доменіңіз болса, Vercel-де NEXT_PUBLIC_SITE_URL айнымалысын орнатыңыз,
- * әйтпесе Vercel-дің production адресі автоматты түрде алынады.
+ * GitHub Pages: сайт https://cpio1.github.io/erketai-kindergarten/ адресінде.
+ * basePath — репозиторий атымен сәйкес келетін ішкі жол.
+ * Өз доменіңіз болса, NEXT_PUBLIC_BASE_PATH="" және NEXT_PUBLIC_SITE_URL орнатыңыз.
  */
-const fromEnv =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "");
+export const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "/erketai-kindergarten").replace(/\/$/, "");
 
-export const siteUrl = (fromEnv || "http://localhost:3000").replace(/\/$/, "");
+const origin = (process.env.NEXT_PUBLIC_SITE_URL || "https://cpio1.github.io").replace(/\/$/, "");
+
+/** Сайттың толық адресі (SEO, Open Graph, sitemap үшін), basePath-пен бірге. */
+export const siteUrl = origin.endsWith(basePath) ? origin : origin + basePath;
+
+/**
+ * public/ ішіндегі файлға жол: next/image және metadata basePath-ты
+ * автоматты түрде қоспайды, сондықтан қолмен қосамыз.
+ */
+export const asset = (p: string) => basePath + (p.startsWith("/") ? p : "/" + p);

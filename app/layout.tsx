@@ -3,7 +3,7 @@ import { Nunito, Unbounded } from "next/font/google";
 import { branches } from "@/lib/branches";
 import { dictionaries } from "@/lib/i18n";
 import { getSiteMedia } from "@/lib/media";
-import { siteUrl } from "@/lib/site-url";
+import { asset, siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 /* Екі қаріп те қазақ әріптерін толық қолдайды: ә, ғ, қ, ң, ө, ұ, ү, һ, і */
@@ -24,9 +24,9 @@ const { title, description } = dictionaries.kk.meta;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { hero, logo } = getSiteMedia();
-  const icon = logo ?? "/favicon.svg";
+  const icon = logo ?? asset("/favicon.svg");
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase: new URL(new URL(siteUrl).origin),
     title,
     description,
     applicationName: "Erketai",
@@ -44,12 +44,12 @@ export async function generateMetadata(): Promise<Metadata> {
       "мкр Астана",
       "частный детский сад",
     ],
-    alternates: { canonical: "/" },
+    alternates: { canonical: `${siteUrl}/` },
     icons: { icon: [{ url: icon }], apple: [{ url: icon }] },
     openGraph: {
       title,
       description,
-      url: "/",
+      url: `${siteUrl}/`,
       siteName: "Erketai",
       locale: "kk_KZ",
       alternateLocale: ["ru_RU"],

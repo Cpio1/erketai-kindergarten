@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { BranchId } from "./branches";
+import { asset } from "./site-url";
 
 /**
  * Суреттер build кезінде public/images ішінен автоматты түрде табылады.
@@ -57,7 +58,7 @@ function list(dir: string): string[] {
   }
 }
 
-const url = (...parts: string[]) => "/" + parts.map(encodeURIComponent).join("/");
+const url = (...parts: string[]) => asset("/" + parts.map(encodeURIComponent).join("/"));
 
 const BRANCH_COVER: Record<BranchId, string[]> = {
   alatau: ["alatau", "branch-1", "filial-1"],
