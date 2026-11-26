@@ -1,14 +1,14 @@
 /**
- * GitHub Pages: сайт https://cpio1.github.io/erketai-kindergarten/ адресінде.
- * basePath — репозиторий атымен сәйкес келетін ішкі жол.
- * Өз доменіңіз болса, NEXT_PUBLIC_BASE_PATH="" және NEXT_PUBLIC_SITE_URL орнатыңыз.
+ * Сайт өз доменінде орналасқан: https://erketai-sad.edu.kz/ (GitHub Pages + custom domain).
+ * basePath бос — барлық ресурстар түбірден (/) жүктеледі.
+ * Қажет болса NEXT_PUBLIC_BASE_PATH және NEXT_PUBLIC_SITE_URL арқылы өзгертуге болады.
  */
-export const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "/erketai-kindergarten").replace(/\/$/, "");
+export const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/$/, "");
 
-const origin = (process.env.NEXT_PUBLIC_SITE_URL || "https://cpio1.github.io").replace(/\/$/, "");
+const origin = (process.env.NEXT_PUBLIC_SITE_URL || "https://erketai-sad.edu.kz").replace(/\/$/, "");
 
 /** Сайттың толық адресі (SEO, Open Graph, sitemap үшін), basePath-пен бірге. */
-export const siteUrl = origin.endsWith(basePath) ? origin : origin + basePath;
+export const siteUrl = !basePath || origin.endsWith(basePath) ? origin : origin + basePath;
 
 /**
  * public/ ішіндегі файлға жол: next/image және metadata basePath-ты
